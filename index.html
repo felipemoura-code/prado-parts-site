@@ -306,6 +306,12 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoratio
     background-position:center,center,72% center!important;
   }
 }
+
+/* Correção responsiva: evita espaço fantasma gerado por flex-basis:620px no cabeçalho de seções. */
+@media (max-width:900px){
+  .section-heading > div{flex:0 1 auto;width:100%;min-width:0;}
+  .section-heading{height:auto;min-height:0;}
+}
 </style>
 
 
