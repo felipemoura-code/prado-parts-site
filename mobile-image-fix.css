@@ -1,0 +1,15 @@
+/* Prado Parts — recorte da imagem de polimento em telas pequenas.
+   A foto original possui faixas desfocadas no topo e na base.
+   O enquadramento 5:2 mostra somente a área central nítida sem distorção. */
+@media (max-width: 760px) {
+  .services-grid > .service-card:first-child .service-art.has-photo {
+    aspect-ratio: 5 / 2;
+    overflow: hidden;
+  }
+  .services-grid > .service-card:first-child .service-art.has-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+}
