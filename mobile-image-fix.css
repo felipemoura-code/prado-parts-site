@@ -13,3 +13,80 @@
     object-position: center center;
   }
 }
+
+/* Prado Parts — ajuste pontual da secao Servicos | PC e celular
+   Arquivo externo: compativel com a CSP atual (style-src 'self').
+   Nao altera menus, formulario, WhatsApp, imagens incorporadas ou o editor.
+*/
+.services-section.section {
+  padding-top:clamp(50px,5.3vw,80px);
+  padding-bottom:clamp(56px,6vw,88px);
+}
+.services-section .section-heading {
+  align-items:flex-start;
+  gap:clamp(14px,3vw,36px);
+  margin-bottom:24px;
+}
+.services-section .section-heading > div {
+  flex:1 1 0;
+  min-width:0;
+}
+.services-section .section-heading > p {
+  flex:0 1 360px;
+  max-width:400px;
+  margin:0;
+  line-height:1.65;
+}
+.services-section .services-grid {gap:14px;}
+.services-section .service-card {
+  min-height:0;
+  padding:18px 19px 17px;
+}
+.services-section .service-top {min-height:22px;}
+.services-section .service-art:not(.has-photo) {height:87px;margin:8px 0 12px;}
+.services-section .service-art:not(.has-photo) svg {height:87px;width:137px;}
+.services-section .service-art.has-photo {
+  width:100%;
+  height:auto;
+  aspect-ratio:16/10;
+  margin:9px 0 12px;
+  background:#f3f5f5;
+  border-radius:8px;
+  overflow:hidden;
+}
+.services-section .service-art.has-photo img {
+  width:100%; height:100%; object-fit:contain; object-position:center;
+}
+/* Foto do polimento possui faixas desfocadas incorporadas.
+   Recorte apenas a imagem de polimento; preservar os demais produtos. */
+.services-section .service-card[data-servico="Polimento de faróis"] .service-art.has-photo img {
+  object-fit:cover;
+  transform:scale(1.50);
+  transform-origin:center;
+}
+.services-section .service-card h3 {line-height:1.25;margin-bottom:6px;}
+.services-section .service-card p {
+  flex:0 0 auto;
+  margin:0 0 12px;
+  line-height:1.6;
+}
+.services-section .service-card a {margin-top:auto;padding-top:12px;}
+@media(max-width:900px) {
+  .services-section .section-heading {flex-direction:column;gap:12px;}
+  .services-section .section-heading > div {flex:0 1 auto;width:100%;}
+  .services-section .section-heading > p {flex:0 1 auto;width:100%;max-width:640px;}
+}
+@media(max-width:600px) {
+  .services-section.section {padding-top:46px;padding-bottom:58px;}
+  .services-section .section-heading {margin-bottom:19px;gap:12px;}
+  .services-section .services-grid {gap:11px;}
+  .services-section .service-card {padding:17px 18px 16px;border-radius:12px;}
+  .services-section .service-art.has-photo {aspect-ratio:16/9;margin:9px 0 11px;}
+  .services-section .service-card h3 {font-size:19px;}
+  .services-section .service-card p {font-size:12px;line-height:1.55;margin-bottom:10px;}
+  .services-section .service-card a {padding-top:12px;}
+  /* Mantém recorte já existente (5:2) para a foto de polimento no celular. */
+  .services-section .service-card[data-servico="Polimento de faróis"] .service-art.has-photo img {
+    transform:none;
+  }
+}
