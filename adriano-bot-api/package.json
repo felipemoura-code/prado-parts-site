@@ -1,0 +1,11 @@
+{
+  "name": "adriano-solucoes-whatsapp-bot",
+  "version": "3.4.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
