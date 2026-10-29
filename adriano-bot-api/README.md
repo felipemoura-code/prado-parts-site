@@ -27,17 +27,30 @@
 **Projeto de testes:** https://adriano-solucoes-teste.onrender.com/simulador-bot.html
 
 
-## Alternativa sem CNPJ: Twilio WhatsApp Sandbox
+## Alternativa com Twilio — distinguir os dois ambientes
 
-Este projeto também oferece `POST /twilio-sandbox` como **adaptador separado**, sem usar a conta de teste bloqueada da Meta e sem migrar o número (19) 98159-5823.
+O bot inclui o adaptador `POST /twilio-sandbox` para o **WhatsApp Sandbox clássico**, que permite receber mensagens e responder por TwiML. Esse adaptador foi desenvolvido, mas **ainda não foi conectado nem testado com sua conta Twilio real**.
 
-1. Criar uma conta autorizada em https://www.twilio.com/try-twilio e abrir **Try out WhatsApp** / **WhatsApp Sandbox**.
-2. Usando o seu WhatsApp pessoal, escanear o QR code ou enviar o código `join ...` para o **número informado pela própria Twilio**. Ele conecta somente seu telefone ao Sandbox.
-3. Na configuração de **Receive a message** (ou **Sandbox settings**), escolher `Custom` ou informar a URL do webhook **https://adriano-solucoes-bot-teste.onrender.com/twilio-sandbox**, método **HTTP POST**, e salvar.
-4. No Render (Environment, não no GitHub/chat), configurar `TWILIO_AUTH_TOKEN` com o **Auth Token** da conta Twilio, `TWILIO_ALLOWED_NUMBERS` com **somente os números autorizados para o teste**, no formato `55119xxxxxxxx` (sem +, espaços ou hífens). **Não use o token do Meta Developers.**
-5. Somente depois de a URL, assinatura e lista terem sido verificadas, configurar `TWILIO_SANDBOX_ACTIVE=true`. O `BOT_ACTIVE` da Meta pode continuar `false` — são rotas independentes.
-6. Enviar `Oi` ao Sandbox para testar serviço, nome, cidade/bairro, endereço, mapa e descrição. Esta rota usa **TwiML** para responder, sem mandar mensagens de produção.
+**Atenção:** o produto Twilio **Try out WhatsApp** (interface nova usada na conta atual) tem uma limitação documentada: **não aceita resposta direta em TwiML XML** durante o trial. Portanto, não basta colocar a URL `/twilio-sandbox` no campo `Auto-reply → Custom` e esperar um menu interativo. Para usar o Tryout, será necessário adaptar a resposta ao método permitido pela conta. O modo Sandbox clássico e o modo Tryout não são equivalentes.
 
-Segurança: valida `X-Twilio-Signature` com o SDK oficial, exige allowlist por número e inicia desativado. O Sandbox é compartilhado e exclusivo para testes. O Render atualmente possui armazenamento **efêmero**, logo não considerar os pedidos de testes como banco durável. Não enviar o Auth Token por chat nem capturas de tela. O histórico de WhatsApp pessoal do Adriano não é afetado.
+### Se o ambiente for o Sandbox clássico com suporte a TwiML
 
-Documentação oficial: https://www.twilio.com/docs/whatsapp/quickstart e https://www.twilio.com/docs/usage/webhooks/webhooks-security
+1. Entre na conta Twilio, confirme o Sandbox e use o número/`join` mostrados na sua própria tela.
+2. Configure **When a message comes in** = `https://adriano-solucoes-bot-teste.onrender.com/twilio-sandbox`, com **POST**.
+3. Configure somente no **Render → Environment**:
+   - `TWILIO_AUTH_TOKEN` = Auth Token da sua conta Twilio (segredo; não compartilhar no chat).
+   - `TWILIO_ALLOWED_NUMBERS` = números que você autorizou para os testes, no formato `55DDDNÚMERO`, apenas dígitos.
+   - `TWILIO_WEBHOOK_URL` = URL exata do webhook informado no painel Twilio.
+4. Teste a verificação de assinatura e a lista de números autorizados.
+5. Somente depois configure `TWILIO_SANDBOX_ACTIVE=true`, mantendo `BOT_ACTIVE=false` para a Meta. Envie `Oi` para testar o menu.
+6. Para desligar imediatamente, volte `TWILIO_SANDBOX_ACTIVE=false`.
+
+No WhatsApp **Try out** atualmente utilizado, primeiro verificaremos se há suporte ao método de resposta exigido; não prometemos menus automáticos por TwiML enquanto essa limitação existir.
+
+### Para hospedar na HostGator
+
+Os arquivos `Dockerfile`, `compose.yaml`, `.env.example` e `INSTALAR-HOSTGATOR.md` foram adicionados ao projeto. Será preciso um **VPS** com Node/Docker, HTTPS, backup, conta WhatsApp autorizada e segredos configurados. O servidor é independente do site estático.
+
+**Segurança e limitações:** o bot inicia com envios desligados, valida assinatura Twilio e permite apenas números explicitamente autorizados. Os dados no Render são efêmeros. O uso real exige armazenamento durável, privacidade e uma integração WhatsApp oficial autorizada. Nenhuma conta/número do Adriano é alterada por esse código.
+
+Referências: https://www.twilio.com/docs/usage/trials/try-out-whatsapp e https://www.twilio.com/docs/whatsapp/sandbox
