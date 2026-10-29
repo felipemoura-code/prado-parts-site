@@ -10,18 +10,20 @@ function fromSite(raw,msg){
  if(!/^Ol[aá], Adriano! Vim pelo site e gostaria de solicitar um or[cç]amento\./i.test(raw))return null;
  const field=(name,max)=>{const line=raw.split(/\r?\n/).find(s=>s.toLowerCase().startsWith(name.toLowerCase()+':'));return line?clean(line.slice(name.length+1),max):'';};
  const name=field('Nome',70),service=field('Serviço',90),location=field('Cidade e bairro',140),details=field('Detalhes',800);
- if(name.length<2||!service||location.length<3||details.length<5)return null;
+ if(name.length<2||(!SERVICES.includes(service)&&service!=='Outro assunto')||location.length<3||details.length<5)return null;
  let address=field('Endereço',220);if(norm(address)==='a combinar')address='';
  return {id:msg.messageId,from:msg.from,createdAt:new Date().toISOString(),source:'site',name,service,location,details,address,mapsUrl:address?maps(address,location):'',photoMediaId:null};
 }
 function transition(previous,msg){
- const state={...initial(),...previous,updatedAt:Date.now()},raw=String(msg.text||'').trim(),t=norm(raw);
+ const old=previous&&Date.now()-Number(previous.updatedAt||0)>24*60*60*1000?null:previous;
+ const state={...initial(),...old,updatedAt:Date.now()},raw=String(msg.text||'').trim(),t=norm(raw);
  const isImg=msg.type==='image',isPin=msg.type==='location';
- if(['menu','inicio','reiniciar','0'].includes(t))return {state:initial(),reply:MENU};
+ if(['menu','inicio','reiniciar','0','cancelar'].includes(t))return {state:initial(),reply:MENU};
+ if(t.includes('ar condicionado')||t.includes('ar-condicionado'))return {state,reply:'❄️ A instalação de ar-condicionado está *em breve*. Ainda não aceitamos pedidos desse serviço.\n\nPara serviços elétricos disponíveis, digite *menu*.'};
  if(state.mode==='human')return {state,reply:null};
  if(state.step==='menu'||state.step==='done'){
-  if(msg.type==='text'){const lead=fromSite(raw,msg);if(lead)return {state:{...state,mode:'human',step:'human'},lead,reply:'✅ *Pedido recebido!* Obrigado, '+lead.name+'. Seu pedido de *'+lead.service+'* já está registrado. O Adriano vai analisar e responder quando estiver disponível. Digite *menu* para um novo atendimento.'};}
-  if(t==='6'||/atendente|humano|falar com (o )?adriano/.test(t))return {state:{...state,mode:'human',step:'human'},reply:'Entendido. Vou encaminhar a conversa para o Adriano, que responderá quando estiver disponível. Digite *menu* para reiniciar o bot.'};
+  if(msg.type==='text'){const lead=fromSite(raw,msg);if(lead)return {state:{...state,mode:'human',step:'human'},lead,reply:'✅ *Pedido recebido!* Obrigado, '+lead.name+'. Seu pedido de *'+lead.service+'* já está registrado. Os dados foram registrados para consulta no painel. Para conversar com Adriano, abra https://wa.me/5519981595823 . Digite *menu* para um novo atendimento.'};}
+  if(t==='6'||/atendente|humano|falar com (o )?adriano/.test(t))return {state:{...state,mode:'human',step:'human'},reply:'O atendimento automático foi pausado. Para falar com Adriano, abra https://wa.me/5519981595823 . Digite *menu* para recomeçar.'};
   const svc=selected(t);return svc?{state:{...initial(),step:'name',service:svc},reply:'Você escolheu *'+svc+'*. Qual é seu nome?'}:{state:initial(),reply:MENU};
  }
  if(state.step==='name'){const name=clean(raw,70);return isImg||isPin||name.length<2?{state,reply:'Informe seu nome por texto, por favor.'}:{state:{...state,step:'location',name},reply:'Obrigado, '+name+'! Qual é a cidade e o bairro do serviço?'};}
@@ -38,7 +40,7 @@ function transition(previous,msg){
   if(isImg&&!msg.mediaId)return {state,reply:'A imagem não chegou. Envie novamente ou digite finalizar.'};
   if(!isImg&&!['finalizar','concluir','pular','nao','sem foto'].includes(t))return {state,reply:'Envie uma foto ou digite finalizar.'};
   const lead={id:msg.messageId,from:msg.from,createdAt:new Date().toISOString(),source:'whatsapp',name:state.name,service:state.service,location:state.location,address:state.address,mapsUrl:state.mapsUrl,details:state.details,photoMediaId:isImg?msg.mediaId:null};
-  return {state:{...state,step:'done'},lead,reply:'✅ *Solicitação registrada!*\nServiço: '+lead.service+'\nCidade/bairro: '+lead.location+'\n'+(lead.mapsUrl?'📍 Rota: '+lead.mapsUrl+'\n':'')+'O Adriano responderá quando estiver disponível. Preço, horário e visita dependem de confirmação. Digite *menu* para outro pedido.'};
+  return {state:{...state,step:'done'},lead,reply:'✅ *Solicitação registrada!*\nServiço: '+lead.service+'\nCidade/bairro: '+lead.location+'\n'+(lead.mapsUrl?'📍 Rota: '+lead.mapsUrl+'\n':'')+'O pedido foi salvo para consulta. Para falar com Adriano: https://wa.me/5519981595823 . Preço, horário e visita dependem de confirmação. Digite *menu* para outro pedido.'};
  }
  return {state:initial(),reply:MENU};
 }
