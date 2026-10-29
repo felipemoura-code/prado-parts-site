@@ -1,6 +1,7 @@
 'use strict';
 const http=require('node:http'),crypto=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
 const {transition}=require('./flow');
+const {handleSandbox,config:sandboxConfig}=require('./twilio-sandbox');
 const active=process.env.BOT_ACTIVE==='true';
 const secret=process.env.META_APP_SECRET||'',verify=process.env.WEBHOOK_VERIFY_TOKEN||'',waToken=process.env.WHATSAPP_ACCESS_TOKEN||'',phoneId=process.env.WHATSAPP_PHONE_NUMBER_ID||'',adminKey=process.env.ADMIN_API_KEY||'';
 const mode=process.env.BOT_MODE||'test';
@@ -26,7 +27,8 @@ function events(payload){const out=[];for(const entry of payload.entry||[])for(c
 async function processPayload(payload){for(const m of events(payload)){if(mode==='test'&&!allowedTestNumbers.has(String(m.from).replace(/\D/g,'')))continue;if(db.processed.includes(m.messageId))continue;const result=transition(db.sessions[m.from],m);if(result.reply)await send(m.from,result.reply);db.sessions[m.from]=result.state;if(result.lead)db.leads.push(result.lead);db.processed.push(m.messageId);if(db.processed.length>2000)db.processed=db.processed.slice(-1500);save();}}
 const srv=http.createServer(async(req,res)=>{
  const url=new URL(req.url,'http://localhost');
- if(req.method==='GET'&&url.pathname==='/health')return reply(res,200,JSON.stringify({ok:true,botActive:active,credentialsConfigured:configured,mode,testAllowlistCount:allowedTestNumbers.size,storage:'ephemeral-until-persistent-volume-configured'}),'application/json');
+ if(req.method==='GET'&&url.pathname==='/health')return reply(res,200,JSON.stringify({ok:true,botActive:active,credentialsConfigured:configured,mode,testAllowlistCount:allowedTestNumbers.size,twilioSandbox:sandboxConfig(),storage:'ephemeral-until-persistent-volume-configured'}),'application/json');
+ if(req.method==='POST'&&url.pathname==='/twilio-sandbox')return handleSandbox(req,res,db,save);
  if(req.method==='GET'&&url.pathname==='/webhook'){const valid=verify&&url.searchParams.get('hub.mode')==='subscribe'&&fixed(url.searchParams.get('hub.verify_token'),verify);return reply(res,valid?200:403,valid?url.searchParams.get('hub.challenge')||'':'Negado');}
  if(req.method==='GET'&&url.pathname==='/admin')return reply(res,200,fs.readFileSync(path.join(__dirname,'admin.html')),'text/html; charset=utf-8');
  if(req.method==='GET'&&url.pathname==='/api/leads'){const auth=req.headers.authorization||'';if(adminKey.length<24||!auth.startsWith('Bearer ')||!fixed(auth.slice(7),adminKey))return reply(res,401,'Não autorizado');return reply(res,200,JSON.stringify({total:db.leads.length,leads:db.leads.slice(-500).reverse()}),'application/json');}
