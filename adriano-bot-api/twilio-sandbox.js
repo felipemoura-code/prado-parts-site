@@ -4,7 +4,8 @@
 const twilio=require('twilio');
 const {transition}=require('./flow');
 
-const endpoint='https://adriano-solucoes-bot-teste.onrender.com/twilio-sandbox';
+const endpoint=process.env.TWILIO_WEBHOOK_URL||'https://adriano-solucoes-bot-teste.onrender.com/twilio-sandbox';
+if(!/^https:\/\/[^\s]+\/twilio-sandbox$/.test(endpoint))throw Error('TWILIO_WEBHOOK_URL deve ser HTTPS e terminar com /twilio-sandbox');
 const sandboxActive=process.env.TWILIO_SANDBOX_ACTIVE==='true';
 const authToken=process.env.TWILIO_AUTH_TOKEN||'';
 const allowed=new Set((process.env.TWILIO_ALLOWED_NUMBERS||'').split(',').map(s=>s.replace(/\D/g,'')).filter(Boolean));
