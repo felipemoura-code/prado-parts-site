@@ -85,8 +85,18 @@
 @media(max-width:540px){.utility-inner{font-size:10px}.about-main h2{font-size:35px}.about-main>p{font-size:14px}.about-visual{min-height:290px}.about-visual-head span{font-size:20px}.about-visual-foot{display:flex;align-items:flex-start;flex-direction:column;gap:8px}.diff-grid{grid-template-columns:1fr}.diff-card{min-height:unset;padding:23px}.diff-symbol{margin:15px 0}.about-highlights span{font-size:10px}}
 
 
-/* Cinco serviços distribuídos em duas linhas equilibradas */
-@media(min-width:801px){.services{grid-template-columns:repeat(6,minmax(0,1fr))}.services .service{grid-column:span 2}.services .service:nth-last-child(-n+2){grid-column:span 3}}
+/* Seis cards: tres colunas no desktop, duas no tablet, uma no celular. */
+@media(min-width:801px){.services{grid-template-columns:repeat(3,minmax(0,1fr))}.services .service{grid-column:auto}}
+.service-upcoming{border:1px dashed #78652e;background:linear-gradient(145deg,#211f18,#18181a)}
+.service-upcoming:hover{border-color:var(--yellow)}
+.service-upcoming .service-icon{color:#e9ca57;background:#302918;border-color:#635124;margin-bottom:16px}
+.service-upcoming .service-icon svg{width:31px;height:31px}
+.service-topline{width:100%;display:flex;justify-content:flex-end;margin:-5px 0 9px;min-height:26px}
+.upcoming-badge{border:1px solid #8a7328;background:rgba(255,211,44,.12);color:#ffdf6e;border-radius:6px;padding:6px 9px;font-size:10px;font-weight:900;letter-spacing:.11em}
+.service-upcoming h3{color:#f2e8cc}
+.service-upcoming p{margin-bottom:20px}
+.upcoming-note{margin-top:auto;display:flex;align-items:center;gap:7px;color:#d6c280;font-weight:800;font-size:12px}
+
 
 </style>
 <meta name="robots" content="noindex,nofollow">
@@ -121,6 +131,13 @@
 <article class="service"><div class="service-icon"><svg viewBox="0 0 32 32"><rect x="5" y="4" width="22" height="24" rx="4"/><path d="M12 11v6m8-6v6M12 22h8"/></svg></div><h3>Tomadas</h3><p>Colocação de tomadas e serviços relacionados à instalação elétrica.</p><a href="#orcamento" data-service="Colocação de tomadas">Solicitar este serviço</a></article>
 <article class="service"><div class="service-icon"><svg viewBox="0 0 32 32"><path d="M5 7h8v8H5zM19 17h8v8h-8zM13 11h6a4 4 0 0 1 4 4v2M9 15v7h10"/></svg></div><h3>Ligações em paralelo</h3><p>Instalação de circuitos de iluminação com comandos em mais de um ponto.</p><a href="#orcamento" data-service="Ligações em paralelo">Solicitar este serviço</a></article>
 <article class="service"><div class="service-icon"><svg viewBox="0 0 32 32"><path d="m17 3-9 14h9l-2 12 10-16h-9z"/></svg></div><h3>Elétrica em geral</h3><p>Avaliação de serviços de instalação, manutenção e reparos elétricos.</p><a href="#orcamento" data-service="Elétrica em geral">Solicitar este serviço</a></article>
+<article class="service service-upcoming" aria-label="Instalação de ar-condicionado, serviço em breve">
+<div class="service-topline"><span class="upcoming-badge">EM BREVE</span></div>
+<div class="service-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="15" rx="3"/><path d="M6 15h20M9 24c0 2-2 2-2 4m9-4c0 2-2 2-2 4m9-4c0 2-2 2-2 4"/></svg></div>
+<h3>Instalação de ar-condicionado</h3>
+<p>Em breve, mais uma solução para sua casa. Serviço ainda não disponível para agendamento.</p>
+<div class="upcoming-note"><span aria-hidden="true">◷</span> Novidade em preparação</div>
+</article>
 </div></div></section>
 <section class="section about-section" id="sobre"><div class="container about-layout">
 <div class="about-main"><span class="kicker">Conheça a empresa</span><h2>Soluções para sua casa, <span>sem complicação.</span></h2>
