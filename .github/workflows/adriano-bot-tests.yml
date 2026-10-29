@@ -1,0 +1,31 @@
+name: Adriano Soluções Bot — Testes
+on:
+  push:
+    branches:
+      - deploy/adriano-solucoes-v3-teste
+    paths:
+      - 'adriano-bot-api/**'
+      - '.github/workflows/adriano-bot-tests.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: adriano-bot-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar dependências
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Verificar JavaScript
+        run: npm run check
+      - name: Testar atendimento e segurança
+        env:
+          BOT_ACTIVE: 'false'
+          TWILIO_SANDBOX_ACTIVE: 'false'
+        run: npm test
