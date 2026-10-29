@@ -25,3 +25,19 @@
 - O simulador web pode ser usado independentemente da Meta.
 
 **Projeto de testes:** https://adriano-solucoes-teste.onrender.com/simulador-bot.html
+
+
+## Alternativa sem CNPJ: Twilio WhatsApp Sandbox
+
+Este projeto também oferece `POST /twilio-sandbox` como **adaptador separado**, sem usar a conta de teste bloqueada da Meta e sem migrar o número (19) 98159-5823.
+
+1. Criar uma conta autorizada em https://www.twilio.com/try-twilio e abrir **Try out WhatsApp** / **WhatsApp Sandbox**.
+2. Usando o seu WhatsApp pessoal, escanear o QR code ou enviar o código `join ...` para o **número informado pela própria Twilio**. Ele conecta somente seu telefone ao Sandbox.
+3. Na configuração de **Receive a message** (ou **Sandbox settings**), escolher `Custom` ou informar a URL do webhook **https://adriano-solucoes-bot-teste.onrender.com/twilio-sandbox**, método **HTTP POST**, e salvar.
+4. No Render (Environment, não no GitHub/chat), configurar `TWILIO_AUTH_TOKEN` com o **Auth Token** da conta Twilio, `TWILIO_ALLOWED_NUMBERS` com **somente os números autorizados para o teste**, no formato `55119xxxxxxxx` (sem +, espaços ou hífens). **Não use o token do Meta Developers.**
+5. Somente depois de a URL, assinatura e lista terem sido verificadas, configurar `TWILIO_SANDBOX_ACTIVE=true`. O `BOT_ACTIVE` da Meta pode continuar `false` — são rotas independentes.
+6. Enviar `Oi` ao Sandbox para testar serviço, nome, cidade/bairro, endereço, mapa e descrição. Esta rota usa **TwiML** para responder, sem mandar mensagens de produção.
+
+Segurança: valida `X-Twilio-Signature` com o SDK oficial, exige allowlist por número e inicia desativado. O Sandbox é compartilhado e exclusivo para testes. O Render atualmente possui armazenamento **efêmero**, logo não considerar os pedidos de testes como banco durável. Não enviar o Auth Token por chat nem capturas de tela. O histórico de WhatsApp pessoal do Adriano não é afetado.
+
+Documentação oficial: https://www.twilio.com/docs/whatsapp/quickstart e https://www.twilio.com/docs/usage/webhooks/webhooks-security
