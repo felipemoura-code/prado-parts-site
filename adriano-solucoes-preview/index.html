@@ -98,16 +98,11 @@
 .upcoming-note{margin-top:auto;display:flex;align-items:center;gap:7px;color:#d6c280;font-weight:800;font-size:12px}
 
 
-/* Card de ar-condicionado: duas faixas diagonais, estilo fita de obra */
-.service-upcoming{overflow:hidden;isolation:isolate}
-.service-upcoming .service-topline{position:relative;z-index:4}
-.service-upcoming .upcoming-badge{background:#ffd32c;color:#121212;border:1px solid #ffe87e;box-shadow:0 3px 14px #0009}
-.service-upcoming .caution-x{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;border-radius:inherit}
-.service-upcoming .caution-tape{position:absolute;left:50%;top:53%;display:block;width:160%;height:39px;background:repeating-linear-gradient(110deg,#ffda26 0 21px,#151515 21px 40px);border-top:2px solid #ffe477;border-bottom:2px solid #9c780e;box-shadow:0 5px 14px #000b,0 -2px 5px #0005;transform-origin:center center}
-.service-upcoming .caution-tape-a{transform:translate(-50%,-50%) rotate(34deg)}
-.service-upcoming .caution-tape-b{transform:translate(-50%,-50%) rotate(-34deg)}
-.service-upcoming .upcoming-note{position:relative;z-index:3;background:#292317;border:1px solid #55451d;border-radius:8px;padding:8px 10px;align-self:flex-start;color:#ffe085}
-@media(max-width:540px){.service-upcoming .caution-tape{height:35px;top:52%}}
+/* Card em breve: informativo, sem interação ou agendamento */
+.service-upcoming{cursor:default}
+.service-upcoming:hover{transform:none;border-color:#78652e}
+.service-upcoming .upcoming-badge{background:#ffd32c;color:#111;border:1px solid #ffe87e;font-weight:900}
+.service-upcoming .upcoming-note{color:#d6c280}
 
 </style>
 <meta name="robots" content="noindex,nofollow">
@@ -143,7 +138,6 @@
 <article class="service"><div class="service-icon"><svg viewBox="0 0 32 32"><path d="M5 7h8v8H5zM19 17h8v8h-8zM13 11h6a4 4 0 0 1 4 4v2M9 15v7h10"/></svg></div><h3>Ligações em paralelo</h3><p>Instalação de circuitos de iluminação com comandos em mais de um ponto.</p><a href="#orcamento" data-service="Ligações em paralelo">Solicitar este serviço</a></article>
 <article class="service"><div class="service-icon"><svg viewBox="0 0 32 32"><path d="m17 3-9 14h9l-2 12 10-16h-9z"/></svg></div><h3>Elétrica em geral</h3><p>Avaliação de serviços de instalação, manutenção e reparos elétricos.</p><a href="#orcamento" data-service="Elétrica em geral">Solicitar este serviço</a></article>
 <article class="service service-upcoming" aria-label="Instalação de ar-condicionado, serviço em breve">
-<div class="caution-x" aria-hidden="true"><span class="caution-tape caution-tape-a"></span><span class="caution-tape caution-tape-b"></span></div>
 <div class="service-topline"><span class="upcoming-badge">EM BREVE</span></div>
 <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="15" rx="3"/><path d="M6 15h20M9 24c0 2-2 2-2 4m9-4c0 2-2 2-2 4m9-4c0 2-2 2-2 4"/></svg></div>
 <h3>Instalação de ar-condicionado</h3>
